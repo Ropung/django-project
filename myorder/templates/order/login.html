@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="p-16 bg-gray-200">
+    <section
+      class="flex flex-col gap-8 border border-gray-3 00 p-4 bg-white rounded-xl shadow-md"
+    >
+      <h1 class="text-3xl text-center py-4">로그인 창</h1>
+      <form
+        action="login"
+        method="POST"
+        class="w-full flex flex-col gap-4 items-center"
+      >
+        {% csrf_token %}
+        <input
+          type="text"
+          placeholder="아이디"
+          name="order_username"
+          class="w-full border border-gray-200 p-2"
+        />
+        <input
+          type="text"
+          placeholder="비밀번호"
+          name="order_password"
+          class="w-full border border-gray-200 p-2"
+        />
+        <input
+          type="submit"
+          required="true"
+          value="로그인"
+          class="w-full bg-gray-200 text-center py-4 px-2 hover:bg-black hover:text-white cursor-pointer"
+        />
+      </form>
+      <a href="/" class="text-right">목록으로</a>
+    </section>
+  </body>
+</html>

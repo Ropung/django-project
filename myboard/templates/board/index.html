@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="w-[100vw] flex flex-col gap-4 px-4 pt-10">
+    <h1 class="text-4xl font-bold">게시판</h1>
+    <table>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>글쓴이</th>
+        <th>등록일</th>
+        <th>조회수</th>
+      </tr>
+      <tbody>
+        {% for b in board_list %}
+        <tr>
+          <td>{{b.id}}</td>
+          <td class="cursor-pointer hover:bg-gray-400">
+            <a href="{{b.id}}"> {{b.title}} </a>
+          </td>
+          <td>{{b.writer}}</td>
+          <td>{{b.input_date|date:'Y/m/d H:i D'}}</td>
+          <td>{{b.view_count}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <!-- 검색 및 글쓰기-->
+    <div class="flex flex-row gap-2 items-center justify-between">
+      <form
+        action="../find_friend/"
+        method="GET"
+        class="border border-black w-fit p-2 rounded-md"
+      >
+        {% csrf_token %}
+        <input
+          type="radio"
+          name="condition"
+          value="all"
+          checked="true"
+        />완전일치 <input type="radio" name="condition" value="part" />부분일치
+        <input
+          type="text"
+          name="friend_name"
+          placeholder="검색"
+          class="border border-black rounded-md p-2"
+        />
+        <input
+          type="submit"
+          value="검색"
+          class="bg-gray-400 border border-black p-4"
+        />
+      </form>
+      <div>
+        <a href="write" class="border boder-gray-400 p-4 bg-gray-200">글쓰기</a>
+      </div>
+    </div>
+  </body>
+</html>
