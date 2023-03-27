@@ -33,6 +33,7 @@ APPEND_SLASH = False
 
 INSTALLED_APPS = [
     "django.contrib.admin",
+    # 장고 인증정보에 관한앱
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 'rest_framework.authtoken',
     "order.apps.OrderConfig",
+    "common.apps.CommonConfig",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# 로그인 성공했을 때 리다이렉트 할 주소
+LOGIN_REDIRECT_URL = '/'
+# 로그아웃 성공했을 때 리다이렉트 할 주소
+LOGOUT_REDIRECT_URL = '/'

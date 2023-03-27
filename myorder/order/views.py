@@ -85,39 +85,3 @@ def delete(request,id):
     Order.objects.get(id=id).delete()
     return HttpResponseRedirect('/')
 # text
-def logout(request):
-    # 현재 세션정보의 user 라는 키를 가진 데이터 취득
-    session_user = request.session.get('user')
-    if session_user:
-        print("로그아웃 성공")
-        request.session['user'] = False
-        return HttpResponseRedirect('/')
-    elif not session_user :
-        print("로그인 하슈")
-        return HttpResponseRedirect('/login')
-    print("logout >>> 예외처리")
-    return  HttpResponseRedirect('/')
-# 
-def login(request):
-    if request.method == "GET" :
-        return render(request,'order/login.html')
-    elif request.method == "POST" :
-        user_id = request.POST["order_username"]
-        user_pass = request.POST["order_password"]
-        # FIXME user 테이블 조회 유효성 검사 or 토큰작업
-        request.session['user'] = user_id
-        return HttpResponseRedirect('/')
-    print("login>>> 예외처리")
-    return HttpResponseRedirect('/')
-
-def signup(request):
-    if request.method == "GET" :
-        return render(request,'order/login.html')
-    elif request.method == "POST" :
-        user_id = request.POST["order_username"]
-        user_pass = request.POST["order_password"]
-        # FIXME user 테이블 조회 유효성 검사 or 토큰작업
-        request.session['user'] = user_id
-        return HttpResponseRedirect('/')
-    print("login>>> 예외처리")
-    return HttpResponseRedirect('/')

@@ -26,7 +26,8 @@
               <tr>
                 <td>{{o.id}}</td>
                 <td class="cursor-pointer hover:bg-gray-400">
-                  <a href="{{o.id}}">
+                  <!--파라미터가 있는 주소를 호출할 떄-->
+                  <a href="{% url 'detail' o.id %}">
                     {{o.order_text}}
                   </a>
                 </td>

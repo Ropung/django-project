@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body>
+    <h1 class="text-4xl">안녕하세요</h1>
+    {# 장고에서 제공하는 User모델 #}
+    <h2>Hello,
+      {# user 정보가있으면 username 표시 #}
+      {% if user.is_authenticated %}
+        {{user.username}}
+      {% else %}
+        GUEST
+      {% endif %}
+    </h2>
+    <ul>
+      {% if not user.is_authenticated %}
+        <li>
+          <a href="signup">회원가입</a>
+        </li>
+        <li>
+          <a href="{%url 'login'%}">로그인</a>
+        </li>
+      {% elif user.is_authenticated %}
+        <li>
+          <a href="order">게시판가기</a>
+        </li>
+        <li>
+          <a href="{%url 'logout' %}">로그아웃</a>
+        </li>
+      {% endif %}
+    </ul>
+  </body>
+
+</html>

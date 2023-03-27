@@ -11,6 +11,12 @@ python manage.py runserver
 
 source venv/bin/activate
 
+<!--슈퍼 유저생성 70page-->
+
+사용자이름 : admin
+이메일 주소: admin@admin.com
+비밀번호 : admin
+
 <!-- 연결끊기 -->
 
 deactivate

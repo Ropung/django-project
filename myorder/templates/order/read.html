@@ -20,9 +20,9 @@
   </section>
   <div class="flex flex-row gap-4">
     {% if request.session.user %}
-      <a href="{{o.id}}/update">수정</a>
-      <a href="{{o.id}}/delete">삭제</a>
+      <a href="{%url 'update' o.id %}">수정</a>
+      <a href="{%url 'delete' o.id %}">삭제</a>
     {% endif %}
-    <a href="/" class="bg-gray-400">목록으로</a>
+    <a href="{% url 'index' %}" class="bg-gray-400">목록으로</a>
   </div>
 {% endblock body %}
