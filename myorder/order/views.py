@@ -23,11 +23,11 @@ def index(request):
         elif search_type == 'price' :
             oList = Order.objects.filter(price__contains = search_word ).order_by('price')
         # 검색 했을때만 검색 기준과 키워드를 context에 넣는다
-        context['searchType'] =search_type
-        context['searchWord'] =search_word
+        context['searchType'] = search_type
+        context['searchWord'] = search_word
     else :
         oList = Order.objects.all().order_by('-id')
-    
+
     # 페이징 넣기
     paginator = Paginator(oList,10)
     page_obj = paginator.get_page(request.GET.get('page'))
