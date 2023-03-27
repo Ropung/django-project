@@ -1,30 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="w-[100vw] p-12 bg-gray-200">
-    <section
-      class="flex flex-col gap-8 border border-black p-8 rounded-md shadow-md bg-white"
-    >
+{# common/base.html을 상속 받겠음 #}
+{% extends 'common/base.html' %}
+{% block title %}[게시판]{% endblock title %}
+  {% block body %}
+  <div class="w-[100vw] pt-4 px-8 bg-gray-200">
+    <section class="flex flex-col gap-8 border border-black p-8 rounded-md shadow-md bg-white">
       <div class="flex flex-row px-4 justify-between items-center">
         <h1 class="text-5xl font-bold">주문 등록 시스템</h1>
-        <div class="flex flex-row gap-4">
-          {% if not request.session.user %}
-          <a href="login" class="border boedr-black py-2 px-4 bg-gray-200"
-            >로그인</a
-          >
-          {% endif %} {% if request.session.user %}
-          <a href="logout" class="border boedr-black py-2 px-4 bg-gray-200"
-            >로그아웃</a
-          >
-          {% endif %}
-        </div>
+        {% if request.session.user %}
+        <a href="write" class="border boedr-black py-2 px-4 bg-gray-200">주문등록</a>
+        {% endif %}
       </div>
+
       <div class="w-full border border-black rounded-md">
         <table class="w-full text-center">
           <tr class="bg-black text-white">
@@ -35,62 +21,103 @@
             <th>주문일시</th>
           </tr>
           <tbody>
-            {% for o in oList %}
-            <tr>
-              <td>{{o.id}}</td>
-              <td class="cursor-pointer hover:bg-gray-400">
-                <a href="{{o.id}}"> {{o.order_text}} </a>
-              </td>
-              <td>{{o.price}}</td>
-              <td>{{o.address}}</td>
-              <td>{{o.order_date|date:'Y/m/d H:i D'}}</td>
-            </tr>
+            {% if page_obj %}
+            {% for o in page_obj %}
+              <tr>
+                <td>{{o.id}}</td>
+                <td class="cursor-pointer hover:bg-gray-400">
+                  <a href="{{o.id}}">
+                    {{o.order_text}}
+                  </a>
+                </td>
+                <td>{{o.price}}</td>
+                <td>{{o.address}}</td>
+                <td>{{o.order_date|date:'Y/m/d H:i D'}}</td>
+              </tr>
             {% endfor %}
+            {% else %}
+              <p>주문이 존재하지 않습니다</p>
+            {% endif %}
           </tbody>
         </table>
       </div>
       <!-- 검색 및 글쓰기-->
-      <div class="flex flex-row gap-2 items-center justify-between">
-        <form
-          action="find_order"
-          method="get"
-          class="flex flex-1 flex-col border border-black w-fit rounded-md p-4"
-        >
-          <div class="flex gap-2">
-            <input
-              type="radio"
-              name="option"
-              value="order"
-              checked="true"
-            />주문검색
-            <input type="radio" name="option" value="address" />주소검색
-            <input
-              type="radio"
-              name="option"
-              value="front_address"
-            />전방일치검색
-            <input type="radio" name="option" value="price" />가격검색
-          </div>
-          <div class="flex flex-row gap-2">
-            <input
-              type="text"
-              name="find_order"
-              placeholder="검색"
-              class="flex flex-1 border border-black rounded-md"
-            />
-            <input
-              type="submit"
-              value="검색"
-              class="bg-gray-400 border border-black w-[20%] px-2"
-            />
+      <div class="flex flex-col gap-2 items-center justify-between">
+        <!-- action을 비워놓게 되면 현재 페이지의 주소를 다시 호출한다.-->
+        <form class="w-full flex flex-col border border-black w-fit rounded-md p-4">
+          <div class="w-full flex flex-row gap-2">
+          <select name = "searchType" class="w-28 border border-gray-400">
+            <!--주문-->
+            {% if searchType == 'order'%}
+            <option value="order" selected="selected">주문</option>
+            {% else%}
+            <option value="order">주문</option>
+            {% endif%}
+            {% if searchType == 'address'%}
+            <option value="address" selected="selected">주소</option>
+            {% else%}
+            <option value="address">주소</option>
+            {% endif%}
+            {% if searchType == 'price'%}
+            <option value="price" selected="selected">가격</option>
+            {% else%}
+            <option value="price">가격</option>
+            {% endif %}
+          </select>
+          
+            <input type="text" name="searchWord" placeholder="검색" value="{{searchWord}}" class="flex flex-1 border border-black rounded-md"/>
+            <input type="submit" value="검색" class="bg-gray-400 border border-black w-[20%] px-2"/>
           </div>
         </form>
-        {% if request.session.user %}
-        <div class="w-[20%] border boder-gray-400 bg-gray-200 text-center p-4">
-          <a href="write" class="">주문등록</a>
+        <div class="flex flex-col gap-4">
+          <aside class="w-full flex flex-row gap-4 justify-center items-center">
+          <!--1번 페이징-->
+          {% if page_obj.has_previous %}
+            <a href="?page=1" class="border boder-gray-400 p-2 bg-gray-200">&laquo;처음 페이지로</a>
+            <a href="?page={{page_obj.previous_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">이전</a>
+          {% endif %}
+            <!-- Paginator 의 number 현재 페이지 번호-->
+            <!-- num_pages는 전체 페이지수 -->
+          {% if page_obj.has_next %}
+            <a href="?page={{page_obj.next_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">다음</a>
+            <a href="?page={{page_obj.paginator.num_pages}}" class="border boder-gray-400 p-2 bg-gray-200">마지막 페이지로 &raquo</a>
+          {% endif %} 
+          </aside>
+          <!--2번 페이징-->
+        <aside class="flex flex-row gap-2 justify-center items-center">
+          {% comment %} <div>
+            {% for page_number in page_obj.paginator.page_range %}
+              <a href="?page={{ page_number }}">{{page_number}}</a>
+            {% endfor %}
+          </div> {% endcomment %}
+        </aside>
+          <!--3번 개선된 페이징 -->
+          <aside class="flex flex-row gap-2 justify-center items-center">
+            {% for page_number in page_obj.paginator.page_range %}
+              <!---->
+              {% if page_number >= page_obj.number|add:-2 and page_number <= page_obj.number|add:2 %}
+              <!--검색조건이있을떄-->  
+              {% if searchWord %} 
+                  <a href="?page={{page_number}}&searchType={{searchType}}&searchWord={{searchWord}}" 
+                     class= "w-9 h-9 flex items-center justify-center border border-gray-400 p-2 bg-black text-white">{{page_number}}</a>
+                <!-- 검색조건이없을떄-->
+              {% else %}  
+
+                {% if page_number == page_obj.number %} 
+                    <a href="?page={{page_number}}" 
+                      class= "w-9 h-9 flex items-center justify-center border border-gray-400 p-4 bg-blue-400 text-white">{{page_number}}</a>
+                {% else %}  
+                    <a href="?page={{page_number}}" 
+                    class= "w-9 h-9 flex items-center justify-center border border-gray-400 p-2 bg-black text-white">{{page_number}}</a>
+                {% endif %}
+              {% endif %}
+              {% endif %}
+              <!---->
+            {% endfor %}
+          </aside>
+          <p class="w-full flex justify-center">현재 페이지 {{page_obj.number}}<!----> of{{page_obj.paginator.num_pages}}</p>
+         
         </div>
-        {% endif %}
-      </div>
-    </section>
-  </body>
-</html>
+      </section>
+    </div>
+  {% endblock body %}

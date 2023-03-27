@@ -1,33 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <!--{% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}" />
-    -->
-  </head>
-  <body>
-    <section class="flex flex-col gap-2">
-      <p>글번호: {{o.id}}</p>
-      <a class="cursor-pointer hover:bg-gray-400">
-        <span>전체상품:</span>
-        {% for o in oList%}
+{% extends 'common/base.html' %}
+{% block title %}[글쓰기]{% endblock title %}
+
+{% block body %}
+  <section class="flex flex-col gap-2">
+    <p>글번호:
+      {{o.id}}</p>
+    <a class="cursor-pointer hover:bg-gray-400">
+      <span>전체상품:</span>
+      {% for o in oList%}
         <p>{{o}}</p>
-        {% endfor %}
-      </a>
-      <p>가격: {{o.price}}</p>
-      <p>글쓴이: {{o.address}}</p>
-      <p>주문일시: {{o.order_date}}</p>
-    </section>
-    <div class="flex flex-row gap-4">
-      {% if request.session.user %}
+      {% endfor %}
+    </a>
+    <p>가격:
+      {{o.price}}</p>
+    <p>글쓴이:
+      {{o.address}}</p>
+    <p>주문일시:
+      {{o.order_date}}</p>
+  </section>
+  <div class="flex flex-row gap-4">
+    {% if request.session.user %}
       <a href="{{o.id}}/update">수정</a>
       <a href="{{o.id}}/delete">삭제</a>
-      {% endif %}
-      <a href="/" class="bg-gray-400">목록으로</a>
-    </div>
-  </body>
-</html>
+    {% endif %}
+    <a href="/" class="bg-gray-400">목록으로</a>
+  </div>
+{% endblock body %}

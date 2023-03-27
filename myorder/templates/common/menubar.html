@@ -1,0 +1,12 @@
+<div class="w-full bg-white h-20 flex flex-col gap-2">
+  <div class="w-full h-full flex flex-row gap-4 items-center jutify-end px-6 boder-b border-gray-400 shadow-md font-bold">
+    <a href="/" class="border boedr-black py-2 px-4 bg-gray-200">홈</a>
+    {% if not request.session.user %}
+      <a href="login" class="border boedr-black py-2 px-4 bg-gray-200">로그인</a>
+      <a href="signup" class="border boedr-black py-2 px-4 bg-gray-200">회원가입</a>
+    {% endif %}
+    {% if request.session.user %}
+      <a href="logout" class="border boedr-black py-2 px-4 bg-gray-200">로그아웃</a>
+    {% endif %}
+  </div>
+</div>
