@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body>
+    <div class="flex flex-col gap-4 p-8">
+      <h1 class="text-4xl">회원가입</h1>
+      <form action={% url 'signup'%} method="post" class="flex flex-col gap-2">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="아이디" class="border border-gray-50 rounded-md">
+        <input type="password" name="password1" placeholder="비밀번호" class="border border-gray-50 rounded-md">
+        <input type="password" name="password2" placeholder="비밀번호확인" class="border border-gray-50 rounded-md">
+        <input type="submit" value="회원가입" class="border border-gray-50 rounded-md bg-black text-white py-4">
+      </form>
+    </div>
+  </body>
+
+</html>

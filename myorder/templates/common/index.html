@@ -23,7 +23,7 @@
     <ul>
       {% if not user.is_authenticated %}
         <li>
-          <a href="signup">회원가입</a>
+          <a href="{% url 'signup' %}">회원가입</a>
         </li>
         <li>
           <a href="{%url 'login'%}">로그인</a>
