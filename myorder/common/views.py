@@ -19,11 +19,11 @@ def signup_custom(request):
         print(request.POST)
         # request.POST에 들어있는 정보를 UserForm형식으로 변환
         form = UserCreationForm(request.POST)
-    
+
         # 폼내용이 유효하다면
         if form.is_valid():
             #db에 폼정보 저장
-            form.save() 
+            form.save()
             # 폼에 입력한 값 가져오기
             username = form.cleaned_data.get('username')
             # 날것의 패스워드
@@ -38,7 +38,7 @@ def signup_custom(request):
                 first_name = first_name,
                 last_name = last_name
                 )
-            
+
             login(request,user)
             # 로그인 하고 메인 페이지로 넘김
             return redirect('/')

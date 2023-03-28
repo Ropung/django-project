@@ -16,11 +16,11 @@ from django.contrib.auth.models import User  #auth_user 테이블과 매핑되�
 class Order(models.Model):
     # 번호는 pk 설정 안하면 장고가 자동으로 id 부여해줌
     ### 필드와 필드 사이에 컴마 금지 ###
-    
+
     #상품
     order_text = models.CharField(max_length=100)
     # 가격
-    price =  models.IntegerField(default=0 , blank=True, null=False) 
+    price =  models.IntegerField(default=0 , blank=True, null=False)
     # 주소
     address = models.CharField(max_length=100)
     # 작성일
@@ -36,7 +36,7 @@ class Order(models.Model):
         # 밑에 두개는 같은표현
         # return "{}:{}".format(self.id,self.order_text)
         return f'{self.id} ~ {self.order_text} ~'
-    
+
     # 모델스 패키지 상속받음
     # 댓글 정보를 포함하는 모델
 class Reply(models.Model):
