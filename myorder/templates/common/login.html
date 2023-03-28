@@ -5,7 +5,7 @@
   <div class="p-16 bg-gray-200">
     <section class="flex flex-col gap-8 border border-gray-3 00 p-4 bg-white rounded-xl shadow-md">
       <h1 class="text-3xl text-center py-4">로그인 창</h1>
-      <form action={%url 'login'%} method="post" class="w-full flex flex-col gap-4 items-center">
+      <form action={%url 'common:login'%} method="post" class="w-full flex flex-col gap-4 items-center">
         {% csrf_token %}
         <input type="text" placeholder="아이디" name="username" class="w-full border border-gray-200 p-2"/>
         <input type="password" placeholder="비밀번호" name="password" class="w-full border border-gray-200 p-2"/>

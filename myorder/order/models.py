@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User  #auth_user 테이블과 매핑되는 모델
 
 # 데이터 베이스의 정보를 저장하는 객체
 # ORM 방식으로 장고를 이용 할 때 필요한 클래스(java의 vo와 느낌이 비슷)
@@ -24,3 +25,7 @@ class Order(models.Model):
     address = models.CharField(max_length=100)
     # 작성일
     order_date = models.DateTimeField(default=timezone.now)
+    # 글쓴이
+    # ForeignKey: 참조키, CASCADE:종속
+    # db에는 필드이름_본키이름으로 열이 생성됨
+    author = models.ForeignKey(User,on_delete=models.CASCADE)

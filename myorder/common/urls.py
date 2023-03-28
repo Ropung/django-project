@@ -2,6 +2,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_view
 from . import views as common_view
 
+app_name = 'common'
+
 urlpatterns = [
     # common 
     path('', common_view.index, name ='index'),

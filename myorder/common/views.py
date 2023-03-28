@@ -25,11 +25,15 @@ def signup_custom(request):
             username = form.cleaned_data.get('username')
             # 날것의 패스워드
             raw_password = form.cleaned_data.get('password1')
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
 
             # 인증하는 함수
             user = authenticate(
                 username = username,
-                password = raw_password
+                password = raw_password,
+                first_name = first_name,
+                last_name = last_name
                 )
             
             login(request,user)

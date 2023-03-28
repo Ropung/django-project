@@ -7,7 +7,7 @@
       <div class="flex flex-row px-4 justify-between items-center">
         <h1 class="text-5xl font-bold">주문 등록 시스템</h1>
         {% if user.is_authenticated %}
-        <a href="write" class="border boedr-black py-2 px-4 bg-gray-200">주문등록</a>
+        <a href="{%url 'order:write'%}" class="border boedr-black py-2 px-4 bg-gray-200">주문등록</a>
         {% endif %}
       </div>
       <div class="w-full border border-black rounded-md">
@@ -15,6 +15,7 @@
           <tr class="bg-black text-white">
             <th>번호</th>
             <th>주문상품</th>
+            <th>주문자</th>
             <th>가격</th>
             <th>주소</th>
             <th>주문일시</th>
@@ -26,10 +27,12 @@
                 <td>{{o.id}}</td>
                 <td class="cursor-pointer hover:bg-gray-400">
                   <!--파라미터가 있는 주소를 호출할 떄-->
-                  <a href="{% url 'detail' o.id %}">
+                  <a href="{% url 'order:detail' o.id %}">
                     {{o.order_text}}
                   </a>
                 </td>
+                <!--author 와 .username 은 같은 네임-->
+                <td>{{o.author}} {{o.author_id}} {{o.author.username}}</td>
                 <td>{{o.price}}</td>
                 <td>{{o.address}}</td>
                 <td>{{o.order_date|date:'Y/m/d H:i D'}}</td>
