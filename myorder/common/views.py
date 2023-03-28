@@ -19,6 +19,7 @@ def signup_custom(request):
         print(request.POST)
         # request.POST에 들어있는 정보를 UserForm형식으로 변환
         form = UserCreationForm(request.POST)
+    
         # 폼내용이 유효하다면
         if form.is_valid():
             #db에 폼정보 저장
@@ -49,7 +50,6 @@ def signup_custom(request):
 def update(request):
     if not request.user.is_authenticated :
         return redirect('common:login')
-    
     if request.method == "GET" :
         # CustomChangeForm(instance) 보내면 장고가 제공하는 기본 폼 사용 할 수 있음
         form = CustomChangeForm()

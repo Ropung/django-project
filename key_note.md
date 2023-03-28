@@ -3,7 +3,6 @@
 python manage.py makemigrations
 python manage.py migrate
 
-
 ### 가상환경 실행
 
 python manage.py runserver
@@ -35,6 +34,7 @@ django-admin startapp 앱이름
 sudo fuser -k 8000/tcp
 
 <!--(setting) 리다이렉트 로그인 로그아웃 -->
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 

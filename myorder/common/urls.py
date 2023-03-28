@@ -7,6 +7,7 @@ app_name = 'common'
 
 urlpatterns = [
     # common 
+    
     path('', common_view.index, name ='index'),
     # path('signup', common_view.signup , name ='signup'),
     path('signup', common_view.signup_custom , name ='signup'),
