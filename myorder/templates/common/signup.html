@@ -14,10 +14,13 @@
       <h1 class="text-4xl">회원가입</h1>
       <form action={% url 'signup'%} method="post" class="flex flex-col gap-2">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="아이디" class="border border-gray-50 rounded-md">
-        <input type="password" name="password1" placeholder="비밀번호" class="border border-gray-50 rounded-md">
-        <input type="password" name="password2" placeholder="비밀번호확인" class="border border-gray-50 rounded-md">
-        <input type="submit" value="회원가입" class="border border-gray-50 rounded-md bg-black text-white py-4">
+        <input type="text" name="username" placeholder="아이디" class="border border-gray-100 rounded-md">
+        <input type="password" name="password1" placeholder="비밀번호" class="border border-gray-100 rounded-md">
+        <input type="password" name="password2" placeholder="비밀번호확인" class="border border-gray-100 rounded-md">
+        <input type="email" name="email" placeholder="이메일" class="border border-gray-100 rounded-md">
+        <input type="text" name="first_name" placeholder="성" class="border border-gray-100 rounded-md">
+        <input type="text" name="last_name" placeholder="이름" class="border border-gray-100 rounded-md">
+        <input type="submit" value="회원가입" class="border border-gray-100 rounded-md bg-black text-white py-4">
       </form>
     </div>
   </body>
