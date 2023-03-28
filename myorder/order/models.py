@@ -29,3 +29,23 @@ class Order(models.Model):
     # ForeignKey: 참조키, CASCADE:종속
     # db에는 필드이름_본키이름으로 열이 생성됨
     author = models.ForeignKey(User,on_delete=models.CASCADE)
+
+    # 자바의 String 이랑 비슷하게
+    # 객체 정보를 문자열로 돌려줌
+    def __str__(self):
+        # 밑에 두개는 같은표현
+        # return "{}:{}".format(self.id,self.order_text)
+        return f'{self.id} ~ {self.order_text} ~'
+    
+    # 모델스 패키지 상속받음
+    # 댓글 정보를 포함하는 모델
+class Reply(models.Model):
+    #pk
+    #게시글 번호(fk)
+    order_obj = models.ForeignKey(Order,on_delete=models.CASCADE)
+    #사용자(fk)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    #덧글내용 content
+    reply_content = models.TextField(null = False,blank=False)
+    #작성시간
+    input_date = models.DateTimeField(default=timezone.now)
