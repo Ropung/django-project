@@ -1,14 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
-from django.template import loader
-from .models import Order
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+
+from .models import Order
 
 def home(request):
     return HttpResponseRedirect('/order/')
 
+# 따로 만든 url이 있다면 login_url 키워드를 지정해야한다.
 def index(request):
-
     oList = None
     context = {}
     if 'searchType' in request.GET and 'searchWord' in request.GET :
@@ -45,43 +46,60 @@ def read(request, id):
             "oList" : order.order_text.split(",")
             }
         return render(request,'order/read.html',context)
-    # 
+    
+@login_required(login_url='common:login')
 def write(request):
     if request.method == "GET" :
         return render(request,'order/order_form.html')
     else : 
-        order_text = request.POST['order_text']
-        address =request.POST['address']
-        price =request.POST['price']
+        if request.user :
+            order_text = request.POST['order_text']
+            address =request.POST['address']
+            price =request.POST['price']
+            author = request.user
+
+            Order.objects.create(
+            author = author,
+            order_text = order_text,
+            price = price,
+            address = address
+            )
+            return redirect('order:index')
         
-        Order.objects.create(
-        order_text = order_text,
-        price = price,
-        address = address
-        )
-        
-        return HttpResponseRedirect('/')
-    # 
+        return redirect('order:index')
+
+@login_required(login_url='common:login')
 def update(request,id):
     o = Order.objects.get(id=id)
-
+    if o.author.username != request.user.username :
+        return redirect('/order/')
     if request.method == "GET" :
         context= {"o" : o}
         return render(request,'order/update.html',context)
     else :
+        author = request.user
         order_text = request.POST['order_text']
         price = request.POST['price']
         address =request.POST['address']
 
+        o.author = author
         o.order_text = order_text
         o.price = price
         o.address = address
         o.save()
         
         context= { "o" : o }
-        return HttpResponseRedirect('/order/'+str(id))
-    # 
+        return redirect('/order/'+str(id))
+    
+@login_required(login_url='common:login')
 def delete(request,id):
-    Order.objects.get(id=id).delete()
-    return HttpResponseRedirect('/')
+    # 해당 객체 가져오기
+    o = Order.objects.get(id=id)
+    if o.author.username != request.user.username :
+        return redirect('common:login')
+    
+    # 권한이 같을때 삭제 실행
+    o.delete()
+    
+    return redirect('order/')
 # text

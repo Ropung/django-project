@@ -7,6 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      function confirmDelete() {
+        let c = prompt("정말 삭제하시겠어요?")
+        if (c) {
+          location.href = '/delete'
+        }
+      }
+    </script>
   </head>
 
   <body>
@@ -20,7 +28,7 @@
         GUEST
       {% endif %}
     </h2>
-    <ul>
+    <ul class="flex flex-col gap-4 py-2">
       <li>
         <a href="{%url 'order:index'%}">게시판가기</a>
       </li>
@@ -33,7 +41,13 @@
         </li>
       {% elif user.is_authenticated %}
         <li>
+          <a href="{%url 'common:update' %}">회원수정</a>
+        </li>
+        <li>
           <a href="{%url 'common:logout' %}">로그아웃</a>
+        </li>
+        <li>
+          <button onclick="javascript:confirmDelete()">회원탈퇴</button>
         </li>
       {% endif %}
     </ul>

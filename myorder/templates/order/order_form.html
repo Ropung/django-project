@@ -31,7 +31,7 @@
       <tr>
         <th colspan="2">
           <a href="../">뒤로가기</a>
-          {% if user.is_authenticated %}
+          {% if user.username %}
             <input type="submit" value="주문하기"/>
           {% endif %}
         </th>

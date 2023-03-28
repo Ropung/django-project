@@ -19,7 +19,8 @@
       {{o.order_date}}</p>
   </section>
   <div class="flex flex-row gap-4">
-    {% if user.is_authenticated %}
+    <!--auther.username 는 user하고 비교한다-->
+    {% if o.author.username == user.username %}
       <a href="{%url 'order:update' o.id %}">수정</a>
       <a href="{%url 'order:delete' o.id %}">삭제</a>
     {% endif %}
