@@ -26,4 +26,19 @@
     {% endif %}
     <a href="{% url 'order:index' %}" class="bg-gray-400">목록으로</a>
   </div>
+  <div id="replyArea">
+    {# 댓글 목록 표시할 곳#}
+    <div>
+      {# order 객체 뿐만 아니라 order와 FK로 엮인 객체는 o.모델이름_set으로 가져올수있다 #}
+      {% if o.reply_set %}
+        {% for r in o.reply_set.all %}
+          {{r}}
+        {% endfor %}
+      {% else %}
+        <p>등록된 댓글이 없습니다.</p>
+      {% endif %}
+    </div>
+    {# 댓글 입력폼#}
+    <div></div>
+  </div>
 {% endblock body %}

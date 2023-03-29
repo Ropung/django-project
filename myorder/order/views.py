@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 
-from .models import Order
+from .models import Order,Reply
 
 def home(request):
     return HttpResponseRedirect("/order/")
@@ -46,8 +46,14 @@ def index(request):
 
 def read(request, id):
     order = Order.objects.get(id=id)
+    # reply_list = Reply.objects.filter( order_obj = id ).order_by('-id')
+
     if request.method == "GET":
-        context = {"o": order, "oList": order.order_text.split(",")}
+        context = {
+            "o": order,
+            "oList": order.order_text.split(","),
+            # "reply_list":reply_list
+            }
         return render(request, "order/read.html", context)
 
 
