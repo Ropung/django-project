@@ -82,7 +82,7 @@ def update(request, id):
     if o.author.username != request.user.username:
         return redirect("/order/")
     if request.method == "GET":
-        context = {"o": o}
+        context = {"o": o }
         return render(request, "order/update.html", context)
     else:
         author = request.user
@@ -113,4 +113,50 @@ def delete(request, id):
     return redirect("order/")
 
 
-# text
+# @login_required(login_url="common:login")
+def write_reply(request, id):
+    user = request.user
+    reply_content = request.POST['reply_content']
+    # &기존 방법
+    # Reply.objects.create(
+    #     user=user,
+    #     reply_content = reply_content,
+    #     order_obj = Order.object.get( id = id )
+    # )
+    # &queryset을 이용한 방법
+    order = Order.objects.get(id = id)
+    order.reply_set.create(
+        reply_content = reply_content,
+        user=user,
+    )
+    # return redirect("order:read" ,id)
+    return redirect("/order/" + str(id))
+
+
+# @login_required(login_url="common:login")
+def delete_reply(request, id, rid):
+
+    Order.objects.get(id=id).reply_set.get(id = rid).delete()
+    # return redirect("order:read" , id)
+    return redirect("/order/" + str(id))
+
+# @login_required(login_url="common:login")
+def update_reply(request,id):
+    if request.method == "GET" :
+        rid = request.GET['rid']
+        order = Order.objects.get(id=id)
+        context = {
+            "update" : 'update',
+            "o":order,
+            "r":order.reply_set.get(id=rid),
+            "oList": order.order_text.split(","),
+        }
+        return render(request,'order/read.html',context)
+    else :  #POST일떄
+        rid = request.POST['rid']
+        reply = Order.objects.get(id = id).reply_set.get(id = rid)
+        reply.reply_content = request.POST['reply_content']
+        reply.save()
+        return redirect("/order/" + str(id))
+
+
