@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-
+from json import loads
 from .models import Order,Reply
 
 def home(request):
@@ -159,4 +159,13 @@ def update_reply(request,id):
         reply.save()
         return redirect("/order/" + str(id))
 
-
+def call_ajax(request) :
+    print("성공한거같아요")
+    print(request.POST)
+    # JSON.stringify 하면 아래 표현 사용할 수 없음
+    # print(request.POST['txt'])
+    data = loads(request.body) # dict형식으로 바꿔줌
+    print('템플릿에서 보낸 데이터',data)
+    # 꺼낼때 키로 꺼냄
+    output_key = data['txt']
+    return JsonResponse({'result':'ㅊㅋㅊㅋ'})

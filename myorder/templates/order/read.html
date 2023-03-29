@@ -33,7 +33,7 @@
   <div id="replyArea">
     {# 댓글 목록 표시할 곳#}
     {# 댓글 입력폼#}
-    <div class="w-full h-28">
+    <div class="w-full h-28 text-lg">
       {% if not update %}
         <form action="{% url 'order:write_reply' o.id %}" method="post" class="w-full flex items-center justify-between p-4 gap-4">
           {% csrf_token %}
@@ -46,7 +46,7 @@
           {% csrf_token %}
           <input type="hidden" name="rid" value="{{r.id}}">
           <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!">{{r.reply_content}}</textarea>
-          <input type="submit" value="댓글수정" class="bg-black text-white">
+          <input type="submit" value="댓글수정" class="bg-black text-white w-40 py-4 rounded-md">
         </form>
       {% endif %}
     </div>
