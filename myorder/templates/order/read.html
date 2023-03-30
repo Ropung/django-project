@@ -5,6 +5,41 @@
     function showUpdateForm(rid, id) {
       location.href = id + '/update_reply?rid=' + rid;
     }
+    $(document).ready(function () {
+      loadReplyList();
+    })
+
+    function loadReplyList() {
+      let bNum = '{{o.id}}';
+      console.log(bNum);
+      $.ajax({
+        url: '{{' load_reply '}}',
+        type: 'post',
+        headers: {
+          'X-CSRFTOKEN': '{{ csrf_token }}'
+        },
+        data: {
+          'id': bNum
+        },
+        success: function (data) {
+          let reply_list = JSON.parse(data['data'])
+          console.log(reply_list);
+
+          //바로바로 화면에 붙이려면 append
+          $.each(reply_list, function (i, item) {
+            //let reply_content = item.fields.reply_content;
+            //$("#replyList").append(reply_content)
+            let pk = item.pk;
+            let user = item.fields.user;
+            let reply_content = item.fields.reply_content;
+            let input_date = item.fields.input_date;
+          })
+
+          // HTML을 만들어서 한번에 넣으려면 html
+
+        }
+      })
+    }
   </script>
   <section class="flex flex-col gap-2">
     <p>글번호:
@@ -45,7 +80,7 @@
         <form action="{% url 'order:update_reply' o.id %}" method="post" class="w-full flex">
           {% csrf_token %}
           <input type="hidden" name="rid" value="{{r.id}}">
-          <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!">{{r.reply_content}}</textarea>
+          <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border">{{r.reply_content}}</textarea>
           <input type="submit" value="댓글수정" class="bg-black text-white w-40 py-4 rounded-md">
         </form>
       {% endif %}
@@ -56,6 +91,7 @@
         {% for r in o.reply_set.all %}
           <section class="flex flex-row gap-4 items-center justify-between border p-2 rounded-md hover:bg-gray-100">
             {#댓글 내용 작성자#}
+
             <div class="flex flex-col gap-6 p-2">
               <p class="flex gap-4">
                 <span class="font-bold">작성자:{{r.user}}</span>

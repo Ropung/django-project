@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from json import loads
 from .models import Order,Reply
 
@@ -166,6 +167,17 @@ def call_ajax(request) :
     # print(request.POST['txt'])
     data = loads(request.body) # dict형식으로 바꿔줌
     print('템플릿에서 보낸 데이터',data)
-    # 꺼낼때 키로 꺼냄
+    # 에시) 꺼낼때 키로 꺼냄
     output_key = data['txt']
     return JsonResponse({'result':'ㅊㅋㅊㅋ'})
+
+def load_reply(request):
+    id = request.POST['id']
+    # 아래 두개는 같은표현
+    # reply_list = Reply.objects.filter( order = id )
+    reply_list = Order.objects.get( id = id ).reply_set.all()
+
+    #QuerySet 그 자체는 JS에서는 알수 없는 타입
+    serialized_list = serializers.serialize('json',reply_list)
+
+    return JsonResponse({'data':serialized_list})
