@@ -94,15 +94,24 @@ def update(request, id):
         context = {"o": o }
         return render(request, "order/update.html", context)
     else:
-        author = request.user
+
         order_text = request.POST["order_text"]
         price = request.POST["price"]
         address = request.POST["address"]
 
-        o.author = author
         o.order_text = order_text
         o.price = price
         o.address = address
+
+        print(request.FILES)
+        if request.FILES.get('uploadFile'):
+            print("오니?")
+            upload_file = request.FILES["uploadFile"]
+            o.attached_file = upload_file
+            o.original_file_name = upload_file.name
+        else :
+            o.attached_file = None
+            o.original_file_name = None
         o.save()
 
         context = {"o": o}
