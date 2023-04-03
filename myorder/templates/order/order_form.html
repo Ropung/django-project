@@ -3,7 +3,7 @@
 
 {% block body %}
   <h1>글쓰기</h1>
-  <form action="{%url 'order:write'%}" method="post">
+  <form action="{%url 'order:write'%}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <table>
       <tr>
@@ -29,6 +29,10 @@
       </tr>
 
       <tr>
+        <th>파일첨부</th>
+        <td><input type="file" name="uploadFile" value="파일첨부"></td>
+      </tr>
+      <tr>
         <th colspan="2">
           <a href="../">뒤로가기</a>
           {% if user.username %}
@@ -36,6 +40,7 @@
           {% endif %}
         </th>
       </tr>
+
     </table>
   </form>
 {% endblock body %}

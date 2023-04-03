@@ -142,6 +142,12 @@
       {{o.address}}</p>
     <p>주문일시:
       {{o.order_date}}</p>
+    {% if o.original_file_name %}
+      <p>첨부파일:
+        {# board/0/download/ #}
+        <a href="{%url 'order:download' id=o.id %}">{{o.original_file_name}}</a>
+      </p>
+    {% endif %}
   </section>
   <div class="flex flex-row gap-4 justify-center">
     <!--auther.username 는 user하고 비교한다-->
@@ -181,6 +187,7 @@
               </p>
               <span>{{r}}</span>
             </div>
+
             {# 버튼 영역 #}
             {% if user.username == r.user.username %}
               <div class="flex flex-row gap-2 bg-gray-50" id="update_reply_form">

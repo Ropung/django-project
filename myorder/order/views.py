@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect,JsonResponse
+from django.http import HttpResponseRedirect,JsonResponse,FileResponse
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
@@ -63,17 +63,25 @@ def write(request):
     if request.method == "GET":
         return render(request, "order/order_form.html")
     else:
+        print(request.POST)
+        print(request.FILES)
         if request.user:
-            order_text = request.POST["order_text"]
-            address = request.POST["address"]
-            price = request.POST["price"]
-            author = request.user
-
-            Order.objects.create(
-                author=author, order_text=order_text, price=price, address=address
+            order = Order(
+                order_text = request.POST["order_text"],
+                address = request.POST["address"],
+                price = request.POST["price"],
+                author = request.user
             )
+            # get 매서드 사용하는 이유
+            # 딕셔너리에서 존재하지 않는 키를 딕셔너리[키] -> KeyError
+            # 딕셔너리.get("키") -> None
+            if request.FILES.get('uploadFile'):
+                upload_file = request.FILES["uploadFile"]
+                # 요청에 들어있던 첨부파일을 모델에 설정
+                order.attached_file = upload_file
+                order.original_file_name = upload_file.name
+            order.save()
             return redirect("order:index")
-
         return redirect("order:index")
 
 
@@ -196,3 +204,14 @@ def load_reply(request , id):
         reply_dict_list.append(reply_dict)
     # serialized_list = serializers.serialize('json',reply_list)
     return JsonResponse({'replyList': reply_dict_list})
+
+def download(request,id) :
+    print(id)
+    order = Order.objects.get(id=id)
+    attached_file = order.attached_file
+    original_file_name= order.original_file_name
+    # 글번호에 달려있던 첨부파일로 파일형식 응답 객체생성
+    response =  FileResponse(attached_file)
+    response["Content-Disposition"] = 'attachment; filename=%s' %original_file_name
+
+    return response

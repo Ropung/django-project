@@ -43,14 +43,17 @@
             {% for o in page_obj %}
               <tr>
                 <td>{{o.id}}</td>
-                <td class="cursor-pointer hover:bg-gray-400">
+                <td class="flex gap-4 cursor-pointer hover:bg-gray-400">
                   <!--파라미터가 있는 주소를 호출할 떄-->
                   <a href="{% url 'order:detail' o.id %}">
                     {{o.order_text}}
                   </a>
+                  {% if o.attached_file %}
+                  <img class="w-6 h-6" src="https://png.pngtree.com/png-vector/20190215/ourmid/pngtree-vector-folder-icon-png-image_539922.jpg" alt="파일있는지 표시">
+                  {% endif %}
                 </td>
                 <!--author 와 .username 은 같은 네임-->
-                <td>{{o.author}} {{o.author_id}} {{o.author.username}}</td>
+                <td>{{o.author.username}}</td>
                 <td>{{o.price}}</td>
                 <td>{{o.address}}</td>
                 <td>{{o.order_date|date:'Y/m/d H:i D'}}</td>

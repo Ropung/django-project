@@ -20,4 +20,5 @@ urlpatterns = [
     # about Ajax
     path('call_ajax', views.call_ajax, name ='call_ajax'),
     path('<int:id>/load_reply', views.load_reply, name ='load_reply'),
+    path('<int:id>/download', views.download, name ='download'),
 ]
