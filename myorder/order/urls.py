@@ -14,10 +14,10 @@ urlpatterns = [
 
     # about reply
     path('<int:id>/write_reply', views.write_reply, name ='write_reply'),
-    path('<int:id>/delete_reply/<int:rid>', views.delete_reply, name ='delete_reply'),
+    path('<int:id>/delete_reply', views.delete_reply, name ='delete_reply'),
     path('<int:id>/update_reply', views.update_reply, name ='update_reply'),
 
     # about Ajax
     path('call_ajax', views.call_ajax, name ='call_ajax'),
-    path('load_reply', views.load_reply, name ='load_reply'),
+    path('<int:id>/load_reply', views.load_reply, name ='load_reply'),
 ]

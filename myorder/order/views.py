@@ -117,7 +117,10 @@ def delete(request, id):
 # @login_required(login_url="common:login")
 def write_reply(request, id):
     user = request.user
-    reply_content = request.POST['reply_content']
+    r = loads(request.body)
+    print(r)
+    reply_text = r['replyText']
+    # reply_content = request.POST['reply_content']
     # &기존 방법
     # Reply.objects.create(
     #     user=user,
@@ -127,38 +130,44 @@ def write_reply(request, id):
     # &queryset을 이용한 방법
     order = Order.objects.get(id = id)
     order.reply_set.create(
-        reply_content = reply_content,
+        reply_content = reply_text,
         user=user,
     )
     # return redirect("order:read" ,id)
-    return redirect("/order/" + str(id))
+    return JsonResponse({'result':'success'})
 
 
 # @login_required(login_url="common:login")
-def delete_reply(request, id, rid):
-
+def delete_reply(request, id):
+    rid =(loads(request.body))['rid']
     Order.objects.get(id=id).reply_set.get(id = rid).delete()
-    # return redirect("order:read" , id)
-    return redirect("/order/" + str(id))
+    return JsonResponse({'data':"success"})
 
 # @login_required(login_url="common:login")
 def update_reply(request,id):
     if request.method == "GET" :
         rid = request.GET['rid']
-        order = Order.objects.get(id=id)
+        reply = Order.objects.get(id=id).reply_set.get(id = rid)
         context = {
-            "update" : 'update',
-            "o":order,
-            "r":order.reply_set.get(id=rid),
-            "oList": order.order_text.split(","),
+            "id":reply.id,
+            "reply_Text":reply.reply_content
         }
-        return render(request,'order/read.html',context)
+        return JsonResponse(context)
+        # return render(request,'order/read.html',context)
+
     else :  #POST일떄
-        rid = request.POST['rid']
+        # rid = request.POST['rid']
+        request_body = loads(request.body)
+        print(request.body)
+        rid = request_body["rid"]
+        reply_text = request_body['replyText']
+
         reply = Order.objects.get(id = id).reply_set.get(id = rid)
-        reply.reply_content = request.POST['reply_content']
+        reply.reply_content = reply_text
         reply.save()
-        return redirect("/order/" + str(id))
+        return JsonResponse({'result':'success'})
+        # return redirect("/order/" + str(id))
+
 
 def call_ajax(request) :
     print("성공한거같아요")
@@ -171,13 +180,19 @@ def call_ajax(request) :
     output_key = data['txt']
     return JsonResponse({'result':'ㅊㅋㅊㅋ'})
 
-def load_reply(request):
-    id = request.POST['id']
-    # 아래 두개는 같은표현
+def load_reply(request , id):
     # reply_list = Reply.objects.filter( order = id )
     reply_list = Order.objects.get( id = id ).reply_set.all()
 
-    #QuerySet 그 자체는 JS에서는 알수 없는 타입
-    serialized_list = serializers.serialize('json',reply_list)
-
-    return JsonResponse({'data':serialized_list})
+    reply_dict_list=[]
+    #reply_list의 정보를 가지고 dictionary만들기
+    for r in reply_list:
+        reply_dict ={
+            'id': r.id,
+            'username':r.user,
+            'replyText': r.reply_content,
+            'inputDate': r.input_date,
+        }
+        reply_dict_list.append(reply_dict)
+    # serialized_list = serializers.serialize('json',reply_list)
+    return JsonResponse({'replyList': reply_dict_list})

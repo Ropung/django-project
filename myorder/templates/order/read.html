@@ -2,40 +2,126 @@
 {% block title %}[글쓰기]{% endblock title %}
 {% block body %}
   <script>
-    function showUpdateForm(rid, id) {
-      location.href = id + '/update_reply?rid=' + rid;
-    }
     $(document).ready(function () {
+      // 1. 수정 폼 숨기기
+      $("#updateForm").hide();
+      // 2. 버튼에 이벤트달기
+      $("#btnWrite").click(function () {
+        writeReply()
+      });
+      $("#btnUpdate").click(function () {
+        updateReply()
+      });
+
       loadReplyList();
     })
 
-    function loadReplyList() {
-      let bNum = '{{o.id}}';
-      console.log(bNum);
+    function updateReply() {
+      let replyText = $("#replyTextUpdate").val()
+      let rid = $("#rid").val();
+      console.log(replyText, rid);
+
+      let data = {
+        'rid': rid,
+        'replyText': replyText
+      }
       $.ajax({
-        url: '{{' load_reply '}}',
+        url: '{% url "order:update_reply" id=o.id %}',
+        type: 'post',
+        data: JSON.stringify(data),
+        headers: {
+          'X-CSRFTOKEN': '{{ csrf_token }}'
+        },
+        success: function (result) {
+          $("#replyTextUpdate").val("");
+          $("#updateForm").hide();
+          $("#writeForm").show();
+
+          loadReplyList();
+          location.reload()
+        }
+      })
+
+    }
+
+    function writeReply() {
+      // 1. textarea에 쓴 문자열 가져오기a
+      let replyText = $("#replyTextWrite").val();
+      let data = {
+        'replyText': replyText
+      }
+
+      $.ajax({
+        url: '{% url "order:write_reply" id=o.id %}',
         type: 'post',
         headers: {
           'X-CSRFTOKEN': '{{ csrf_token }}'
         },
+        data: JSON.stringify(data),
+        success: function (result) {
+          $("#replyTextWrite").val("");
+          loadReplyList();
+          location.reload()
+        }
+      })
+    }
+
+    function showUpdateForm(pram) {
+      // location.href = id + '/update_reply?rid=' + rid;
+      $("#writeForm").hide();
+      $("#updateForm").show();
+
+      $.ajax({
+        url: '{%url "order:update_reply" id=o.id  %}',
+        type: 'get',
         data: {
-          'id': bNum
+          'rid': pram
         },
+        // TODO
+        success: function (res) {
+          console.log(res);
+          console.log(res.reply_Text);
+          //수정 입력창에 댓글 내용 표시
+          $("#replyTextUpdate").val(res.reply_Text);
+          //rid 라는 id를 가진 hidden 태그에 값 설정
+          $("#rid").val(pram);
+        }
+      })
+    }
+
+    function deleteReply(param) {
+      let data = {
+        'rid': param
+      };
+      $.ajax({
+        url: '{%url "order:delete_reply" id=o.id  %}',
+        type: 'post',
+        data: JSON.stringify(data),
+        headers: {
+          'X-CSRFTOKEN': '{{ csrf_token }}'
+        },
+        success: function (res) {
+          console.log(res);
+          location.reload()
+        }
+      })
+
+    }
+
+    function loadReplyList() {
+      console.log("호출됬음");
+      $.ajax({
+        url: '{% url "order:load_reply" id=o.id %}',
+        type: 'get',
         success: function (data) {
-          let reply_list = JSON.parse(data['data'])
-          console.log(reply_list);
-
-          //바로바로 화면에 붙이려면 append
-          $.each(reply_list, function (i, item) {
-            //let reply_content = item.fields.reply_content;
-            //$("#replyList").append(reply_content)
-            let pk = item.pk;
-            let user = item.fields.user;
-            let reply_content = item.fields.reply_content;
-            let input_date = item.fields.input_date;
+          console.log("성공");
+          $.each(data.replyList, function (index, item) {
+            replyDate = item
+              .inputDate
+              .replace("T", " ")
+              .replace("Z", "")
+              .split(".")[0];
           })
-
-          // HTML을 만들어서 한번에 넣으려면 html
 
         }
       })
@@ -68,22 +154,18 @@
   <div id="replyArea">
     {# 댓글 목록 표시할 곳#}
     {# 댓글 입력폼#}
+    {# TODO #}
     <div class="w-full h-28 text-lg">
-      {% if not update %}
-        <form action="{% url 'order:write_reply' o.id %}" method="post" class="w-full flex items-center justify-between p-4 gap-4">
-          {% csrf_token %}
-          <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border"></textarea>
-          <input type="submit" value="댓글작성" class="bg-black text-white w-40 py-4 rounded-md">
-        </form>
-      {% else %}
-        <!--context에 update가 없을떄-->
-        <form action="{% url 'order:update_reply' o.id %}" method="post" class="w-full flex">
-          {% csrf_token %}
-          <input type="hidden" name="rid" value="{{r.id}}">
-          <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border">{{r.reply_content}}</textarea>
-          <input type="submit" value="댓글수정" class="bg-black text-white w-40 py-4 rounded-md">
-        </form>
-      {% endif %}
+      <div class="w-full flex items-center justify-between p-4 gap-4" id="writeForm">
+        <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border" id="replyTextWrite"></textarea>
+        <input type="button" value="댓글작성" id="btnWrite" class="bg-black text-white w-40 py-4 rounded-md">
+      </div>
+      <!--context에 update가 없을떄-->
+      <div class="w-full flex" id="updateForm">
+        <input type="hidden" name="rid" value="" id="rid">
+        <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border" id="replyTextUpdate"></textarea>
+        <input type="button" value="댓글수정" id="btnUpdate" class="bg-black text-white w-40 py-4 rounded-md">
+      </div>
     </div>
     <div class="flex flex-col gap-2 p-4">
       {# order 객체 뿐만 아니라 order와 FK로 엮인 객체는 o.모델이름_set으로 가져올수있다 #}
@@ -100,10 +182,13 @@
               <span>{{r}}</span>
             </div>
             {# 버튼 영역 #}
-            <div class="flex flex-row gap-2 bg-gray-50">
-              <a href="#" onclick="javascript:showUpdateForm('{{r.id}}', '{{o.id}}')" class="bg-blue-400 p-2 rounded-md text-white">수정</a>
-              <a href="{% url 'order:delete_reply' id=o.id rid=r.id %}" class="bg-red-400 p-2 rounded-md text-white">삭제</a>
-            </div>
+            {% if user.username == r.user.username %}
+              <div class="flex flex-row gap-2 bg-gray-50" id="update_reply_form">
+                <a href="#" onclick="javascript:showUpdateForm('{{r.id}}')" class="bg-blue-400 p-2 rounded-md text-white">수정</a>
+                <a href="#" onclick="javascript:deleteReply('{{r.id}}')" class="bg-red-400 p-2 rounded-md text-white">삭제</a>
+              </div>
+            {% endif %}
+
           </section>
         {% endfor %}
       {% else %}
