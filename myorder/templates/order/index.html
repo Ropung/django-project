@@ -45,7 +45,7 @@
                 <td>{{o.id}}</td>
                 <td class="flex justify-between gap-4 cursor-pointer hover:bg-gray-400">
                   <!--파라미터가 있는 주소를 호출할 떄-->
-                  <div class="flex flex-row gap-2">
+                  <div class="flex flex-row">
                   <a href="{% url 'order:detail' o.id %}">
                     {{o.order_text}}
                   </a>

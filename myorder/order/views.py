@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from json import loads
 from .models import Order,Reply
+from django.views.generic import ListView
 
 def home(request):
     return HttpResponseRedirect("/order/")
@@ -224,3 +225,7 @@ def download(request,id) :
     response["Content-Disposition"] = 'attachment; filename=%s' %original_file_name
 
     return response
+
+### Class Based View ###
+class OrderList(ListView):
+    pass

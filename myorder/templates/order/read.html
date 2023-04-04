@@ -144,7 +144,6 @@
       {{o.order_date}}</p>
     {% if o.original_file_name %}
       <p>첨부파일:
-        {# board/0/download/ #}
         <a href="{%url 'order:download' id=o.id %}">{{o.original_file_name}}</a>
       </p>
     {% endif %}
