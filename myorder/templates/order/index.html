@@ -23,9 +23,9 @@
         <h1 class="text-5xl font-bold">주문 등록 시스템</h1>
         {% if user.is_authenticated %}
         <div>
-          <a href="{%url 'order:write'%}" class="border boedr-black p-4 bg-gray-200">주문등록</a>
+          <a href="{%url 'order:write' %}" class="border boedr-black p-4 bg-gray-200">주문등록</a>
           {% endif %}
-        <input type="button" value="눌러보세요." onclick="callFunction()">
+        <input type="button" value="예시" onclick="callFunction()">
       </div>
       </div>
       <div class="w-full border border-black rounded-md">
@@ -101,14 +101,18 @@
           <aside class="w-full flex flex-row gap-4 justify-center items-center">
           <!--1번 페이징-->
           {% if page_obj.has_previous %}
-            <a href="?page=1" class="border boder-gray-400 p-2 bg-gray-200">&laquo;처음 페이지로</a>
-            <a href="?page={{page_obj.previous_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">이전</a>
+            {# GET의 parameter(쿼리스트링)은 URL의 구성요소와 별도로 표시 #}
+            <a href="{%url 'order:index'%}?page=1" class="border boder-gray-400 p-2 bg-gray-200">&laquo;처음 페이지로</a>
+            {# <a href="?page=1" class="border boder-gray-400 p-2 bg-gray-200">&laquo;처음 페이지로</a> #}
+
+            <a href="{%url 'order:index'%}?page={{page_obj.previous_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">이전</a>
+            {#<a href="?page={{page_obj.previous_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">이전</a> #}
           {% endif %}
             <!-- Paginator 의 number 현재 페이지 번호-->
             <!-- num_pages는 전체 페이지수 -->
           {% if page_obj.has_next %}
-            <a href="?page={{page_obj.next_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">다음</a>
-            <a href="?page={{page_obj.paginator.num_pages}}" class="border boder-gray-400 p-2 bg-gray-200">마지막 페이지로 &raquo</a>
+            <a href="{%url 'order:index'%}?page={{page_obj.next_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">다음</a>
+            <a href="{%url 'order:index'%}?page={{page_obj.paginator.num_pages}}" class="border boder-gray-400 p-2 bg-gray-200">마지막 페이지로 &raquo</a>
           {% endif %}
           </aside>
           <!--2번 페이징-->
@@ -126,16 +130,15 @@
               {% if page_number >= page_obj.number|add:-2 and page_number <= page_obj.number|add:2 %}
               <!--검색조건이있을떄-->
               {% if searchWord %}
-                  <a href="?page={{page_number}}&searchType={{searchType}}&searchWord={{searchWord}}"
+                  <a href="{%url 'order:index'%}?page={{page_number}}&searchType={{searchType}}&searchWord={{searchWord}}"
                      class= "w-9 h-9 flex items-center justify-center border border-gray-400 p-2 bg-black text-white">{{page_number}}</a>
-                <!-- 검색조건이없을떄-->
-              {% else %}
-
+                     {% else %}
+                     <!-- 검색조건이없을떄-->
                 {% if page_number == page_obj.number %}
-                    <a href="?page={{page_number}}"
+                    <a href="{%url 'order:index'%}?page={{page_number}}"
                       class= "w-9 h-9 flex items-center justify-center border border-gray-400 p-4 bg-blue-400 text-white">{{page_number}}</a>
                 {% else %}
-                    <a href="?page={{page_number}}"
+                    <a href="{%url 'order:index'%}?page={{page_number}}"
                     class= "w-9 h-9 flex items-center justify-center border border-gray-400 p-2 bg-black text-white">{{page_number}}</a>
                 {% endif %}
               {% endif %}

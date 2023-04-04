@@ -1,46 +1,100 @@
-{% extends 'common/base.html' %}
-{% block title %}[글쓰기]{% endblock title %}
-
+{% extends 'common/base.html' %} {% block title %}[글쓰기]{% endblock title %}
 {% block body %}
-  <h1>글쓰기</h1>
-  <form action="{%url 'order:write'%}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <th>상품주문:</th>
-        <td>
-          <input type="text" name="order_text" class="border border-gray-400"/>
-        </td>
-      </tr>
-      <!--session에 writer가 없으면 해당 tr 표시-->
+<script>
+  function formValidate() {
+    console.log("탔니?");
 
-      <tr>
-        <th>가격:</th>
-        <td>
-          <input type="number" name="price" class="border border-gray-400"/>
-        </td>
-      </tr>
+    let order_text = document.getElementById("order_text").value;
+    let price = document.getElementById("price").value;
+    let addres = document.getElementById("address").value;
 
-      <tr>
-        <th>주소:</th>
-        <td>
-          <textarea name="address" class="border border-gray-400"></textarea>
-        </td>
-      </tr>
+    //if (order_text.include("바보", "멍청이", "한조")) {
+    //  alert("욕설 사용금지");
+    //  return false;
+    //}
+    //if (order_text == "" && order_text.length <= 10) {
+    //  alert("글 내용이 비어있거나 10글자이하");
+    //  return false;
+    //}
+    //if (price == 0 && price < 3000) {
+    //  alert("최소금액은 3000원이상");
+    //  return false;
+    //}
+    //if (addres == "" && addres == null) {
+    //  alert("주소공백금지");
+    //  return false;
+    //}
+    alert("false");
+    return false;
+  }
 
-      <tr>
-        <th>파일첨부</th>
-        <td><input type="file" name="uploadFile" value="파일첨부"></td>
-      </tr>
-      <tr>
-        <th colspan="2">
-          <a href="../">뒤로가기</a>
-          {% if user.username %}
-            <input type="submit" value="주문하기"/>
-          {% endif %}
-        </th>
-      </tr>
+  // - 댓글에서 쓸수있는함수
+  // 댓글 창 비어있으면 경고창 표시
+  function fromValidateReply(text) {
+    if (text == "" && text == null) {
+      alert("댓글 공백 금지");
+      return false;
+    }
+    return true;
+  }
+</script>
+<h1 class="text-5xl">상품 주문 게시판</h1>
+<form
+  action="{%url 'order:write'%}"
+  method="post"
+  enctype="multipart/form-data"
+  onsubmit="return formValidate()"
+>
+  {% csrf_token %}
+  <table>
+    <tr>
+      <th>상품주문:</th>
+      <td>
+        <input
+          id="order_text"
+          type="text"
+          name="order_text"
+          class="border border-gray-400"
+        />
+      </td>
+    </tr>
+    <!--session에 writer가 없으면 해당 tr 표시-->
 
-    </table>
-  </form>
+    <tr>
+      <th>가격:</th>
+      <td>
+        <input
+          id="price"
+          type="number"
+          name="price"
+          class="border border-gray-400"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <th>주소:</th>
+      <td>
+        <textarea
+          id="address"
+          name="address"
+          class="border border-gray-400"
+        ></textarea>
+      </td>
+    </tr>
+
+    <tr>
+      <th>파일첨부</th>
+      <td><input type="file" name="uploadFile" value="파일첨부" /></td>
+    </tr>
+    <tr>
+      <th colspan="2">
+        <a href="../">뒤로가기</a>
+        {% if user.username %}
+        <input type="submit" value="주문하기" />
+        {% endif %}
+      </th>
+    </tr>
+  </table>
+</form>
 {% endblock body %}

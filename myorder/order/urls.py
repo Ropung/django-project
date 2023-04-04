@@ -21,4 +21,9 @@ urlpatterns = [
     path('call_ajax', views.call_ajax, name ='call_ajax'),
     path('<int:id>/load_reply', views.load_reply, name ='load_reply'),
     path('<int:id>/download', views.download, name ='download'),
+
+    #CBV 방식으로 호출할 주소
+    # as_view() 클래스를 뷰의 기능으로서 사용하겠다.
+    path('cbv', views.OrderList.as_view(), name = 'cbv'),
+    path('cbv/<int:id>', views.OrderDetail.as_view(), name = 'cbv_detail')
 ]
