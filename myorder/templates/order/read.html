@@ -18,6 +18,12 @@
 
     function updateReply() {
       let replyText = $("#replyTextUpdate").val()
+
+      if (replyText.length === 0) {
+        alert("공백 댓글입력 금지")
+        return false
+      }
+
       let rid = $("#rid").val();
       console.log(replyText, rid);
 
@@ -47,6 +53,12 @@
     function writeReply() {
       // 1. textarea에 쓴 문자열 가져오기a
       let replyText = $("#replyTextWrite").val();
+
+      if (replyText.length === 0) {
+        alert("공백 댓글입력 금지")
+        return false
+      }
+
       let data = {
         'replyText': replyText
       }
@@ -162,13 +174,13 @@
     {# TODO #}
     <div class="w-full h-28 text-lg">
       <div class="w-full flex items-center justify-between p-4 gap-4" id="writeForm">
-        <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border" id="replyTextWrite"></textarea>
+        <textarea id="replyTextWrite" name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border"></textarea>
         <input type="button" value="댓글작성" id="btnWrite" class="bg-black text-white w-40 py-4 rounded-md">
       </div>
       <!--context에 update가 없을떄-->
       <div class="w-full flex" id="updateForm">
         <input type="hidden" name="rid" value="" id="rid">
-        <textarea name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border" id="replyTextUpdate"></textarea>
+        <textarea id="replyTextUpdate" name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border"></textarea>
         <input type="button" value="댓글수정" id="btnUpdate" class="bg-black text-white w-40 py-4 rounded-md">
       </div>
     </div>

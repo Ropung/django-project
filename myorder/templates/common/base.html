@@ -10,13 +10,15 @@
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    {# {% load static %} #}
-    {# <script type="text/javascript" src="{%static 'script.js'%}"/> #}
-    {% include 'common/menubar.html' %}
+    {% comment %} {% load static %} {% endcomment %}
+    {% comment %} <link rel="stylesheet" href="{% static 'style.css' %}"/> {% endcomment %}
 
+  </head>
+
+  <body>
+    {% include 'common/menubar.html' %}
     <!--다른 내용을 삽입할 자리를 만들기-->
     {% block body %}{% endblock body %}
-
   </body>
 
 </html>
