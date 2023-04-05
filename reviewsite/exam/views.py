@@ -10,7 +10,6 @@ from .models import Movie,Review
 def index(request):
     mList = None
     context={}
-
     if "genreType" in request.GET :
         search_genre = request.GET["genreType"]
         if search_genre == "all":
@@ -60,23 +59,14 @@ def write(request):
         print(request.POST)
         print(request.FILES)
         if request.user:
-            order = Order(
-                order_text = request.POST["order_text"],
-                address = request.POST["address"],
-                price = request.POST["price"],
-                author = request.user
+            m = Movie(
+                genre = request.POST["genreType"],
+                movie_name = request.POST["movie_title"],
+                movie_summary = request.POST["movie_content"],
             )
-            # get 매서드 사용하는 이유
-            # 딕셔너리에서 존재하지 않는 키를 딕셔너리[키] -> KeyError
-            # 딕셔너리.get("키") -> None
-            if request.FILES.get('uploadFile'):
-                upload_file = request.FILES["uploadFile"]
-                # 요청에 들어있던 첨부파일을 모델에 설정
-                order.attached_file = upload_file
-                order.original_file_name = upload_file.name
-            order.save()
-            return redirect("order:index")
-        return redirect("order:index")
+            m.save()
+            return redirect("exam:index")
+        return redirect("exam:index")
 
 
 # @login_required(login_url="common:login")
