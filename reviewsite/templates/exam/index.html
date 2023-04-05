@@ -1,0 +1,111 @@
+{# common/base.html을 상속 받겠음 #}
+{% extends 'exam/base.html' %}
+{% block title %}[영화리뷰 게시판]{% endblock title %}
+{% block body %}
+  <script>
+    $(document).ready(function () {
+
+      $("#movieReview").on("click", function () {
+        let movieReview = $("#movieReview").val();
+        sortMovie(movieReview)
+      })
+    })
+
+    function sortMovie(sortMovie) {
+      let data = {
+        'review_movie': sortMovie
+      }
+
+      $.ajax({
+        url: '{% url "exam:index"%}',
+        type: 'get',
+        data: JSON.stringify(data),
+        success: function (result) {
+          console.log(result);
+          location.reload()
+        }
+      })
+    }
+  </script>
+  <div class="w-[100vw] pt-4 px-8 bg-gray-200">
+    <section class="flex flex-col gap-8 border border-black p-8 rounded-md shadow-md bg-white">
+      <div class="flex flex-row px-4 justify-between items-center">
+        <h1 class="text-5xl font-bold">[영화리뷰 게시판]</h1>
+        <div>
+          <a href="{%url 'exam:write' %}" class="border boedr-black p-4 bg-gray-200">영화등록</a>
+        </div>
+      </div>
+      <div>
+        <p class="flex gap-2 items-center">
+          <a href="{%url 'exam:index' %}" class="bg-black text-white p-2 rounded-md cursor-pointer">최신순</a>
+          <span id="movieReview" class="bg-black text-white p-2 rounded-md cursor-pointer">리뷰순</span>
+        </p>
+      </div>
+      <div class="w-full border border-black rounded-md">
+        <table class="w-full text-center">
+          <tr class="bg-black text-white">
+            <th>번호</th>
+            <th>장르</th>
+            <th>영화</th>
+            <th>줄거리</th>
+            <th>일시</th>
+          </tr>
+          {% if mList %}
+            {% for m in mList %}
+              <tbody>
+                <tr>
+                  <td>{{m.id}}</td>
+                  <td>{{m.genre}}</td>
+                  <td class="flex justify-between gap-4 cursor-pointer hover:bg-gray-400">
+                    <div class="flex flex-row">
+                      <a href="{% url 'exam:read' m.id %}">
+                        {{m.movie_name}}
+                      </a>
+                    </div>
+                    <span class="w-6 h-6 bg-gray-400 text-white rounded-md">{{m.review_set.all.count}}</span>
+                  </td>
+                  <!--author 와 .username 은 같은 네임-->
+                  <td>{{m.movie_summary}}</td>
+                  <td>{{m.reg_date|date:'Y/m/d H:i D'}}</td>
+                </tr>
+              </tbody>
+            {% endfor %}
+          {% else %}
+            <td>영화 없어요 안팔아요</td>
+          {% endif %}
+        </table>
+      </div>
+      <!-- 검색 및 글쓰기-->
+      <div class="flex flex-col gap-2 items-center justify-between">
+        <!-- action을 비워놓게 되면 현재 페이지의 주소를 다시 호출한다.-->
+        <form class="w-full flex flex-col border border-black w-fit rounded-md p-4">
+          <div class="w-full flex flex-row gap-2">
+            <select name="genreType" class="w-28 border border-gray-400">
+              <!--주문-->
+              {% if genreType == 'all'%}
+                <option value="all" selected="selected">전체</option>
+                {% else%}
+                <option value="all">전체</option>
+                {% endif%}
+                {% if genreType == 'act'%}
+                  <option value="act" selected="selected">액션</option>
+                  {% else%}
+                  <option value="act">액션</option>
+                  {% endif%}
+                  {% if genreType == 'ani'%}
+                    <option value="ani" selected="selected">애니</option>
+                    {% else%}
+                    <option value="ani">애니</option>
+                    {% endif%}
+                    {% if genreType == 'comic'%}
+                      <option value="comic" selected="selected">코믹</option>
+                      {% else%}
+                      <option value="comic">코믹</option>
+                    {% endif %}
+                  </select>
+                  <input type="submit" value="장르검색" class="bg-gray-400 border border-black w-[20%] px-2"/>
+                </div>
+              </form>
+            </section>
+          </div>
+        {% endblock body %}

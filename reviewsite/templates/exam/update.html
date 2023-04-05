@@ -1,0 +1,63 @@
+{% extends 'common/base.html' %}
+{% block title %}[글쓰기]{% endblock title %}
+
+{% block body %}
+  <script>
+    function validateFile() {
+      let file = document.getElementById("uploadFile");
+      //첨부 파일이 있었는데 수정하면서 없을떄
+      if ('{{o.original_file_name}}' !== "" && file.value === "") {
+        let go = confirm("파일이 첨부되지 않았습니다. 계속하실?")
+        if (go == true) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  </script>
+
+  <h1>주문수정</h1>
+  <form action={% url 'order:update' o.id %} method="post" enctype="multipart/form-data" onsubmit="return validateFile()">
+    {% csrf_token %}
+    <table>
+      <tr>
+        <th>주문상품:</th>
+        <td>
+          <input type="text" name="order_text" value="{{o.order_text}}" class="border border-gray-400"/>
+        </td>
+      </tr>
+      <tr>
+        <th>가격:</th>
+        <td>
+          <input type="text" name="price" value="{{o.price}}" class="border border-gray-400"/>
+        </td>
+      </tr>
+      <tr>
+        <th>주소:</th>
+        <td>
+          <textarea cols="30" rows="3" name="address" class="border border-gray-400">
+            {{o.address}}</textarea>
+        </td>
+      </tr>
+      <tr>
+        <th>첨부파일:</th>
+        <td>
+          {% if o.original_file_name %}
+            <span>현재 첨부파일:</span>
+            <span>{{o.original_file_name}}</span>
+          {% else %}
+            <span>파일없음</span>
+          {% endif %}
+          <input type="file" name="uploadFile" id="uploadFile" value="{{o.original_file_name}}">
+        </td>
+      </tr>
+      <tr>
+        <th colspan="2">
+          <a href="../">뒤로가기</a>
+          <input type="submit" value="글쓰기"/>
+        </th>
+      </tr>
+    </table>
+  </form>
+{% endblock body %}

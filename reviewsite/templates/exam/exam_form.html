@@ -1,0 +1,78 @@
+{% extends 'exam/base.html' %}
+{% block title %}[글쓰기]{% endblock title %}
+{% block body %}
+  <script>
+    function formValidate() {
+      let genreType = $("#genreType").val();
+      let movie_title = $("#movie_title").val();
+      let movie_content = $("#movie_content").val();
+
+      if (genreType === "none") {
+        alert("장르를 선택해주세요");
+        return false;
+      }
+      if (movie_title == "" || movie_content == "") {
+        alert("제목 또는 내용이 비어있습니다.");
+        return false;
+      }
+
+      console.log("벨리드타나?");
+      return true;
+    }
+  </script>
+  <div class="w-full flex flex-col gap-8 justify-center items-center py-20">
+    <h1 class="text-5xl p-2">영화 등록 게시판</h1>
+    <form action="{%url 'exam:write'%}" method="post" onsubmit="return formValidate()">
+      {% csrf_token %}
+      <table>
+        <tr>
+          <th>장르선택:</th>
+          <td>
+            <select id="genreType" name="genreType" class="w-28 border border-gray-400">
+              <!--주문-->
+              {% if genreType == 'none'%}
+                <option value="none" selected="selected">선택</option>
+                {% else%}
+                <option value="none">선택</option>
+                {% endif%}
+
+                {% if genreType == 'act'%}
+                  <option value="act" selected="selected">액션</option>
+                  {% else%}
+                  <option value="act">액션</option>
+                  {% endif%}
+                  {% if genreType == 'ani'%}
+                    <option value="ani" selected="selected">애니</option>
+                    {% else%}
+                    <option value="ani">애니</option>
+                    {% endif%}
+                    {% if genreType == 'comic'%}
+                      <option value="comic" selected="selected">코믹</option>
+                      {% else%}
+                      <option value="comic">코믹</option>
+                    {% endif %}
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>제목:</th>
+                <td>
+                  <input id="movie_title" type="text" name="movie_title" class="border border-gray-400"/>
+                </td>
+              </tr>
+
+              <tr>
+                <th>내용:</th>
+                <td>
+                  <textarea id="movie_content" name="movie_content" cols="20" class="border border-gray-400"></textarea>
+                </td>
+              </tr>
+            </tr>
+          </table>
+          <div class="w-full flex justify-end gap-4">
+            <a href="../" class="bg-black text-white p-2 rounded-md">뒤로가기</a>
+            <input type="submit" value="주문하기" class="bg-black text-white p-2 rounded-md"/>
+          </div>
+        </form>
+      </div>
+    {% endblock body %}
