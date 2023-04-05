@@ -78,14 +78,16 @@ def write(request):
 def update(request, id):
     m = Movie.objects.get(id=id)
     if request.method == "GET":
-        context = {"m": m }
+        context = {
+          "m": m,
+          "genre" : m.genre
+          }
         return render(request, "exam/update.html", context)
     else:
         m.genre = request.POST["genreType"]
         m.movie_name =  request.POST["movie_title"]
         m.movie_summary =  request.POST["movie_content"]
         m.save()
-        context = {"m": m}
         return redirect("/"+str(id))
 
 def delete(request, id):

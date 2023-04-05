@@ -23,7 +23,7 @@
 
   <h1>주문수정</h1>
 
-  <form action={% url 'exam:update' m.id %} method="post" enctype="multipart/form-data" onsubmit="return formValidate()">
+  <form action={% url 'exam:update' m.id %} method="post" onsubmit="return formValidate()">
     {% csrf_token %}
     <table>
       <tr>
@@ -31,23 +31,22 @@
         <td>
           <select id="genreType" name="genreType" class="w-28 border border-gray-400">
             <!--주문-->
-            {% if genreType == 'none'%}
+            {% if genre == 'none'%}
               <option value="none" selected="selected">선택</option>
               {% else%}
               <option value="none">선택</option>
               {% endif%}
-
-              {% if genreType == 'act'%}
+              {% if genre == 'act'%}
                 <option value="act" selected="selected">액션</option>
                 {% else%}
                 <option value="act">액션</option>
                 {% endif%}
-                {% if genreType == 'ani'%}
+                {% if genre == 'ani'%}
                   <option value="ani" selected="selected">애니</option>
                   {% else%}
                   <option value="ani">애니</option>
                   {% endif%}
-                  {% if genreType == 'comic'%}
+                  {% if genre == 'comic'%}
                     <option value="comic" selected="selected">코믹</option>
                     {% else%}
                     <option value="comic">코믹</option>
