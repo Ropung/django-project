@@ -13,7 +13,7 @@ def index(request):
     if "genreType" in request.GET :
         search_genre = request.GET["genreType"]
         if search_genre == "all":
-            mList = Movie.objects.all().order_by("-id")
+            mList = Movie.objects.all()
         if search_genre == "act":
             mList = Movie.objects.filter(genre__contains=search_genre).order_by(
                 "-id"
@@ -28,7 +28,7 @@ def index(request):
         context["searchType"] = search_genre
         context['mList'] = mList
     else:
-      mList = Movie.objects.all().order_by("-id")
+      mList = Movie.objects.all()
       context['mList'] = mList
 
     if "review_movie" in request.GET:
@@ -56,84 +56,53 @@ def write(request):
     if request.method == "GET":
         return render(request, "exam/exam_form.html")
     else:
-        print(request.POST)
-        print(request.FILES)
-        if request.user:
-            m = Movie(
-                genre = request.POST["genreType"],
-                movie_name = request.POST["movie_title"],
-                movie_summary = request.POST["movie_content"],
-            )
-            m.save()
-            return redirect("exam:index")
+
+        m = Movie(
+            genre = request.POST["genreType"],
+            movie_name = request.POST["movie_title"],
+            movie_summary = request.POST["movie_content"],
+        )
+        m.save()
         return redirect("exam:index")
 
 
-# @login_required(login_url="common:login")
-# def update(request, id):
-#     o = Order.objects.get(id=id)
-#     if o.author.username != request.user.username:
-#         return redirect("/order/")
-#     if request.method == "GET":
-#         context = {"o": o }
-#         return render(request, "order/update.html", context)
-#     else:
+def update(request, id):
+    m = Movie.objects.get(id=id)
+    if request.method == "GET":
+        context = {"m": m }
+        return render(request, "exam/update.html", context)
+    else:
+        m.genre = request.POST["genreType"]
+        m.movie_name =  request.POST["movie_title"]
+        m.movie_summary =  request.POST["movie_content"]
+        m.save()
+        context = {"m": m}
+        return redirect("/"+str(id))
 
-#         order_text = request.POST["order_text"]
-#         price = request.POST["price"]
-#         address = request.POST["address"]
+def delete(request, id):
+    m = Movie.objects.get(id=id)
+    m.delete()
+    return JsonResponse({'data': id})
 
-#         o.order_text = order_text
-#         o.price = price
-#         o.address = address
+def write_review(request, id):
+    r = loads(request.body)
+    reviewer_name = r['r_viewer']
+    review_text = r['r_text']
+    score = r['r_score']
+    m = Movie.objects.get(id = id)
+    m.review_set.create(
+        reviewer_name = reviewer_name,
+        review_text = review_text,
+        score = score
+    )
+    # 현재 세션에 리뷰어 등록
+    request.session['reviewer'] = r['r_viewer']
 
-#         print(request.FILES)
-#         if request.FILES.get('uploadFile'):
-#             print("오니?")
-#             upload_file = request.FILES["uploadFile"]
-#             o.attached_file = upload_file
-#             o.original_file_name = upload_file.name
-#         else :
-#             o.attached_file = None
-#             o.original_file_name = None
-#         o.save()
+    context = {
+      'message': '댓글을 작성을 성공했습니다.',
+    }
 
-#         context = {"o": o}
-#         return redirect("/order/" + str(id))
-
-
-# @login_required(login_url="common:login")
-# def delete(request, id):
-#     # 해당 객체 가져오기
-#     o = Order.objects.get(id=id)
-#     if o.author.username != request.user.username:
-#         return redirect("common:login")
-#     # 권한이 같을때 삭제 실행
-#     o.delete()
-#     return redirect("/order/")
-
-
-# # @login_required(login_url="common:login")
-# def write_reply(request, id):
-#     user = request.user
-#     r = loads(request.body)
-#     print(r)
-#     reply_text = r['replyText']
-#     # reply_content = request.POST['reply_content']
-#     # &기존 방법
-#     # Reply.objects.create(
-#     #     user=user,
-#     #     reply_content = reply_content,
-#     #     order_obj = Order.object.get( id = id )
-#     # )
-#     # &queryset을 이용한 방법
-#     order = Order.objects.get(id = id)
-#     order.reply_set.create(
-#         reply_content = reply_text,
-#         user=user,
-#     )
-#     # return redirect("order:read" ,id)
-#     return JsonResponse({'result':'success'})
+    return JsonResponse(context)
 
 
 # # @login_required(login_url="common:login")

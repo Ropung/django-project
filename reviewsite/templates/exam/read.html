@@ -1,7 +1,73 @@
 {% extends 'exam/base.html' %}
 {% block title %}[영화 등록하기]{% endblock title %}
 {% block body %}
-  <script></script>
+  <script>
+    function writeReview() {
+      let reviewer_name = $("#reviewer_name").val();
+      let review_text = $("#review_text").val();
+      let score = $("#score").val();
+      console.log(reviewer_name, review_text, score);
+
+      if (reviewer_name == "" || review_text == "") {
+        alert("작성자 또는 내용을 적어주세요")
+        return false
+      }
+      if (score < 0 || score > 10) {
+        alert("0~10 까지의 숫자만 입력해주세요")
+        return false
+      }
+      let data = {
+        'r_viewer': reviewer_name,
+        'r_text': review_text,
+        'r_score': score
+      }
+      $.ajax({
+        url: '{% url "exam:write_review" id=m.id %}',
+        type: 'post',
+        headers: {
+          'X-CSRFTOKEN': '{{ csrf_token }}'
+        },
+        data: JSON.stringify(data),
+        success: function (res) {
+          alert(res.message);
+          $("#reviewer_name").val(res);
+          $("#review_text").val("");
+          $("#score").val("");
+
+          location.reload()
+        }
+      })
+    }
+
+    function deleteMovie(param) {
+      messege = confirm("삭제할거에요?")
+      if (!messege) {
+        alert("삭제 취소됨")
+        location.reload()
+        return false
+      }
+
+      let data = {
+        'mid': param
+      };
+
+      $.ajax({
+        url: '{%url "exam:delete" id=m.id  %}',
+        type: 'post',
+        data: JSON.stringify(data),
+        headers: {
+          'X-CSRFTOKEN': '{{ csrf_token }}'
+        },
+        success: function (res) {
+          alert(res.data + "번 이 삭제되었습니다.")
+          window
+            .location
+            .replace("/");
+        }
+      })
+
+    }
+  </script>
   <section class="flex flex-col gap-2">
     <h1 class="text-5xl p-2">영화 등록하기</h1>
     <p>등록번호:
@@ -15,34 +81,40 @@
     <p>등록일:
       {{m.reg_date}}</p>
   </section>
-  <div class="flex flex-row gap-4 justify-center">
-    {% if o.author.username == user.username %}
-      <a href="{%url 'exam:update' m.id %}">수정</a>
-      <a href="{%url 'exam:delete' m.id %}">삭제</a>
-    {% endif %}
+  {# 수정 삭제 목록#}
+  <div class="flex flex-row gap-4 justify-start px-4">
+    <a href="{%url 'exam:update' m.id %}" class="bg-black text-white p-4 rounded-md">수정</a>
+    <a href="#" onclick="javascript:deleteMovie('{{r.id}}')" class="bg-black text-white p-4 rounded-md">삭제</a>
     <a href="{% url 'exam:index' %}" class="bg-black text-white p-4 rounded-md">목록으로</a>
   </div>
+  {# 리뷰 #}
   <section id="replyArea">
-    <article class="w-full h-28 text-lg">
+    <article class="w-full h-28 text-base">
       <div class="w-full flex items-center justify-between p-4 gap-4" id="writeForm">
-        <textarea id="replyTextWrite" name="reply_content" placeholder="댓글 내용을 입력해주세요!" class="flex flex-1 border"></textarea>
-        <input type="button" value="댓글작성" id="btnWrite" class="bg-black text-white w-40 py-4 rounded-md">
+        {% if not request.session.reviewer %}
+          <input type="text" name="reviewer_name" id="reviewer_name" class="w-[15%] h-12 border p-2" placeholder="작성자 입력">
+        {% else %}
+          <input type="text" name="reviewer_name" id="reviewer_name" class="w-[15%] h-12 border p-2" value="{{request.session.reviewer}}">
+        {% endif %}
+        <input type="text" name="review_text" id="review_text" class="flex flex-1 h-12 border p-2" placeholder="댓글 입력">
+        <input type="number" name="score" id="score" class="w-[15%] h-12 border p-2" placeholder="점수입력">
+        <input type="button" value="댓글작성" id="reviewWrite" class="bg-black text-white w-40 py-4 rounded-md" onclick="javascript:writeReview()">
       </div>
     </article>
+    <div id="replyCount"></div>
+    {#댓글표시#}
     <div class="flex flex-col gap-2 p-4">
-      {% if not m.review_set %}
-        {% for r in m.reply_set.all %}
-          <section class="flex flex-row gap-4 items-center justify-between border p-2 rounded-md hover:bg-gray-100">
-            {#댓글 내용 작성자#}
-            <div class="flex flex-col gap-6 p-2">
-              <p class="flex gap-4">
-                <span class="font-bold">작성자:{{r.reviewer_name}}</span>
-                <span class="text-gray-400 text-xs">{{r.review_text}}</span>
-                <span>평점:{{r.score}}점</span>
-                <span>등록일:{{r.reg_date}}</span>
-              </p>
-            </div>
-          </section>
+      {% if m.review_set %}
+        {% for r in m.review_set.all %}
+          <div class="flex flex-row gap-8 items-center justify-between border p-2 rounded-md hover:bg-gray-100">
+            <p class="flex gap-2 items-center">
+              <span class="font-bold">
+                {{request.session.reviewer}}:</span>
+              <span class="text-gray-900 text-xs">{{r.review_text}}</span>
+            </p>
+            <span>{{r.score}}점</span>
+            <span>{{r.reg_date}}</span>
+          </div>
         {% endfor %}
       {% else %}
         <p>등록된 리뷰가 없습니다.</p>

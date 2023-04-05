@@ -12,10 +12,10 @@ class Movie(models.Model):
     reg_date =  models.DateTimeField(default=timezone.now)
 
 class Review(models.Model):
-    # 리뷰 작성자
-    reviewer_name =  models.CharField(max_length=20)
     # 영화 객체
     movie = models.ForeignKey(Movie,on_delete=models.CASCADE)
+    # 리뷰 작성자
+    reviewer_name =  models.CharField(max_length=20)
     # 리뷰 내용
     review_text =  models.TextField()
     # 영화 평점
@@ -23,3 +23,7 @@ class Review(models.Model):
     # 리뷰 등록일
     reg_date =  models.DateTimeField(default=timezone.now)
 
+
+# r_viewer
+# r_text
+# r_score
