@@ -13,7 +13,7 @@
         updateReply()
       });
 
-      loadReplyList();
+      //loadReplyList();
     })
 
     function updateReply() {
@@ -25,7 +25,6 @@
       }
 
       let rid = $("#rid").val();
-      console.log(replyText, rid);
 
       let data = {
         'rid': rid,
@@ -43,7 +42,7 @@
           $("#updateForm").hide();
           $("#writeForm").show();
 
-          loadReplyList();
+          //loadReplyList();
           location.reload()
         }
       })
@@ -72,7 +71,7 @@
         data: JSON.stringify(data),
         success: function (result) {
           $("#replyTextWrite").val("");
-          loadReplyList();
+          //loadReplyList();
           location.reload()
         }
       })
@@ -120,24 +119,24 @@
 
     }
 
-    function loadReplyList() {
-      console.log("호출됬음");
-      $.ajax({
-        url: '{% url "order:load_reply" id=o.id %}',
-        type: 'get',
-        success: function (data) {
-          console.log("성공");
-          $.each(data.replyList, function (index, item) {
-            replyDate = item
-              .inputDate
-              .replace("T", " ")
-              .replace("Z", "")
-              .split(".")[0];
-          })
-
-        }
-      })
-    }
+    //function loadReplyList() {
+    //  console.log("호출됬음");
+    //  $.ajax({
+    //    url: '{% url "order:load_reply" id=o.id %}',
+    //    type: 'get',
+    //    success: function (data) {
+    //      console.log("성공");
+    //      $.each(data.replyList, function (index, item) {
+    //        replyDate = item
+    //          .inputDate
+    //          .replace("T", " ")
+    //          .replace("Z", "")
+    //          .split(".")[0];
+    //      })
+    //
+    //    }
+    //  })
+    //}
   </script>
   <section class="flex flex-col gap-2">
     <p>글번호:

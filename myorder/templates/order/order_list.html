@@ -12,7 +12,7 @@
     <h1>CBV로 객체 가져오기!!</h1>
     {# class 기반에서는 기본적으로 list 이름을 객체이름 _list로 사용 가능#}
     {% for o in order_list %}
-      <a href="{%url 'order:cbv_detail' o.id%}">
+      <a href="{%url 'order:detail' o.id%}">
         <span>{{o.order_text}}</span><br>
       </a>
     {% endfor %}

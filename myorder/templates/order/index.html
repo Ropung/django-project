@@ -104,7 +104,6 @@
             {# GET의 parameter(쿼리스트링)은 URL의 구성요소와 별도로 표시 #}
             <a href="{%url 'order:index'%}?page=1" class="border boder-gray-400 p-2 bg-gray-200">&laquo;처음 페이지로</a>
             {# <a href="?page=1" class="border boder-gray-400 p-2 bg-gray-200">&laquo;처음 페이지로</a> #}
-
             <a href="{%url 'order:index'%}?page={{page_obj.previous_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">이전</a>
             {#<a href="?page={{page_obj.previous_page_number}}" class="border boder-gray-400 p-2 bg-gray-200">이전</a> #}
           {% endif %}

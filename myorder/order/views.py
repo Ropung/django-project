@@ -125,11 +125,9 @@ def delete(request, id):
     o = Order.objects.get(id=id)
     if o.author.username != request.user.username:
         return redirect("common:login")
-
     # 권한이 같을때 삭제 실행
     o.delete()
-
-    return redirect("order/")
+    return redirect("/order/")
 
 
 # @login_required(login_url="common:login")
