@@ -8,11 +8,11 @@
       let score = $("#score").val();
       console.log(reviewer_name, review_text, score);
 
-      if (reviewer_name == "" || review_text == "") {
-        alert("작성자 또는 내용을 적어주세요")
+      if (review_text == "" || review_text.length < 11) {
+        alert("리뷰 내용이 너무 짧습니다.")
         return false
       }
-      if (score < 0 || score > 10) {
+      if (score < 0 || score > 10 || score == "") {
         alert("0~10 까지의 숫자만 입력해주세요")
         return false
       }
@@ -30,7 +30,7 @@
         data: JSON.stringify(data),
         success: function (res) {
           alert(res.message);
-          $("#reviewer_name").val(res);
+          $("#reviewer_name").val("");
           $("#review_text").val("");
           $("#score").val("");
 
@@ -89,7 +89,7 @@
   </div>
   {# 리뷰 #}
   <section id="replyArea">
-    <article class="w-full h-28 text-base">
+    <div class="w-full h-20 text-base">
       <div class="w-full flex items-center justify-between p-4 gap-4" id="writeForm">
         {% if not request.session.reviewer %}
           <input type="text" name="reviewer_name" id="reviewer_name" class="w-[15%] h-12 border p-2" placeholder="작성자 입력">
@@ -100,20 +100,28 @@
         <input type="number" name="score" id="score" class="w-[15%] h-12 border p-2" placeholder="점수입력">
         <input type="button" value="댓글작성" id="reviewWrite" class="bg-black text-white w-40 py-4 rounded-md" onclick="javascript:writeReview()">
       </div>
-    </article>
-    <div id="replyCount"></div>
+    </div>
+
     {#댓글표시#}
     <div class="flex flex-col gap-2 p-4">
-      {% if m.review_set %}
-        {% for r in m.review_set.all %}
+      {% if rList %}
+        {# 관객 평점 #}
+        <p class="flex gap-2 text-3xl">
+          <span>관객평점:</span>
+          <span>{{score_average}}</span>
+        </p>
+        {# m.review_set.all #}
+        {% for r in rList %}
           <div class="flex flex-row gap-8 items-center justify-between border p-2 rounded-md hover:bg-gray-100">
             <p class="flex gap-2 items-center">
               <span class="font-bold">
-                {{request.session.reviewer}}:</span>
+                {{r.reviewer_name}}:</span>
               <span class="text-gray-900 text-xs">{{r.review_text}}</span>
             </p>
-            <span>{{r.score}}점</span>
-            <span>{{r.reg_date}}</span>
+            <p class="flex gap-4">
+              <span class="bg-blue-100 rounded-md p-1">{{r.score}}점</span>
+              <span>{{r.reg_date}}</span>
+            </p>
           </div>
         {% endfor %}
       {% else %}

@@ -10,44 +10,53 @@ from .models import Movie,Review
 def index(request):
     mList = None
     context={}
+    #리플순 정렬
+    if "review_movie" in request.GET:
+      print("타라")
+      mList = Movie.objects.all().order_by("review_set.all")
+      context['mList'] = mList
+      return render(request, "exam/index.html",context)
+
+    # 선택된 카테고리를 보여줌
     if "genreType" in request.GET :
         search_genre = request.GET["genreType"]
         if search_genre == "all":
-            mList = Movie.objects.all()
+            mList = Movie.objects.all().order_by("-id")
         if search_genre == "act":
-            mList = Movie.objects.filter(genre__contains=search_genre).order_by(
-                "-id"
-            )
+            mList = Movie.objects.filter(genre__contains=search_genre).order_by("-id")
         elif search_genre == "ani":
-            mList = Movie.objects.filter(genre__contains=search_genre).order_by(
-                "-id"
-            )
+            mList = Movie.objects.filter(genre__contains=search_genre).order_by("-id")
         elif search_genre == "comic":
             mList = Movie.objects.filter(genre__contains=search_genre).order_by("-id")
         # 검색 했을때만 검색 기준과 키워드를 context에 넣는다
         context["searchType"] = search_genre
         context['mList'] = mList
     else:
-      mList = Movie.objects.all()
+      mList = Movie.objects.all().order_by("-id")
+      # mList = Movie.objects.all().order_by("-id")
       context['mList'] = mList
-
-    if "review_movie" in request.GET:
-      mList = Movie.objects.all().order_by("review_set.all")
-      context['mList'] = mList
-      return JsonResponse(context)
-
-
     return render(request, "exam/index.html",context)
 
 
 def read(request, id):
     movie = Movie.objects.get(id=id)
-    # reply_list = Reply.objects.filter( order_obj = id ).order_by('-id')
+    review_list = Review.objects.filter( movie = id ).order_by('-id')
 
     if request.method == "GET":
+
+        score_sum = 0
+        context={}
+
+        if review_list :
+          for r in review_list :
+            score_sum += r.score
+          score_average = score_sum / review_list.count()
+        else :
+          score_average = 0
         context = {
             "m": movie,
-            # "reply_list":reply_list
+            "rList":review_list,
+            'score_average': round(score_average)
             }
         return render(request, "exam/read.html", context)
 
