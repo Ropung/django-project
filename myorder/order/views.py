@@ -14,7 +14,7 @@ def index(request):
 def find_order(request) :
     input_name = request.GET['find_order']
     option = request.GET['option']
-    
+    # 
     oList = []
     if  option == 'order':
         oList = Order.objects.filter(order_text__contains = input_name).order_by('order_text')
